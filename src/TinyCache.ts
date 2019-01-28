@@ -86,11 +86,11 @@ export class TinyCache {
     xhr.open("GET", script.url, true);
     xhr.timeout = this.config.timeout;
     xhr.onload = () => {
-      if (xhr.status > 200 && xhr.status < 400) {
+      if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
         callback(null, xhr.responseText);
       }
     };
-    xhr.onerror = () => {
+    xhr.ontimeout = xhr.onerror = () => {
       callback(new Error(`Failed to load: ${script.url}`));
     };
     xhr.send();

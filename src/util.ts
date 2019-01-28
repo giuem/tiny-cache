@@ -20,7 +20,8 @@ export function asyncFn<T>(
           callback(err, null);
           callback = null;
         }
-      } else if (--count === 0 && callback) {
+      }
+      if (--count === 0 && callback) {
         callback(null, results);
       }
     });
