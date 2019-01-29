@@ -72,7 +72,7 @@ test("asyncFn() error", done => {
     ],
     (err, results) => {
       expect(err).toBeInstanceOf(Error);
-      expect(results).toBe(null);
+      expect(results).toBeUndefined();
       done();
     }
   );

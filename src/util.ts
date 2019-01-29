@@ -1,3 +1,5 @@
+import { ICallback } from "./types";
+
 export function merge(obj1: any, obj2: any) {
   for (const key in obj2) {
     if (obj2.hasOwnProperty(key)) {
@@ -7,17 +9,17 @@ export function merge(obj1: any, obj2: any) {
 }
 
 export function asyncFn<T>(
-  tasks: Array<(callback: (err: Error | null, result: T) => void) => void>,
-  callback: null | ((err: Error | null, results: T[] | null) => void)
+  tasks: Array<(callback: ICallback<T>) => void>,
+  callback: null | (ICallback<Array<T | undefined>>)
 ) {
-  const results: T[] = [];
+  const results: Array<T | undefined> = [];
   let count = tasks.length;
   tasks.forEach((task, index) => {
     task((err, result) => {
       results[index] = result;
       if (err) {
         if (callback) {
-          callback(err, null);
+          callback(err);
           callback = null;
         }
       }

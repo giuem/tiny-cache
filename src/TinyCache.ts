@@ -1,126 +1,65 @@
-import { merge } from "./util";
+import {
+  LoadScriptEl,
+  LoadScriptFallback,
+  LoadScriptFromStorage,
+  LoadScriptFromXHR,
+  SaveScriptToStorage
+} from "./loader";
+import {
+  ICallback,
+  IScriptConfig,
+  ITinyCacheConfig,
+  ITinyCacheConfigInternal
+} from "./types";
+import { asyncFn, merge } from "./util";
 
-interface IScript {
-  name: string;
-  url: string;
-  maxAge: number;
-}
-
-interface IConfig {
-  sources: IScript[];
-  timeout: number;
-}
-
-interface IConfigPublic {
-  sources: IScript[];
-  timeout?: number;
-}
-
-interface IStorageItem {
-  name: string;
-  url: string;
-  expire: number;
-  content: string;
-}
-const storage = window.localStorage;
-
-const PREFIX = "TC_";
+// function saveToCache()
 
 export class TinyCache {
-  private config: IConfig = {
-    sources: [],
+  private config: ITinyCacheConfigInternal = {
+    prefix: "TC:",
     timeout: 6000
   };
-  constructor(config: IConfigPublic) {
+
+  constructor(config?: ITinyCacheConfig) {
     merge(this.config, config);
   }
 
-  public load(callback?: (error: Error) => void): Promise<void> | void {
+  public load(
+    scripts: IScriptConfig[],
+    callback?: ICallback<Array<null | undefined>>
+  ) {
     if (!callback) {
       return new Promise((resolve, reject) => {
-        this.load(err => {
+        this.load(scripts, err => {
           err ? reject(err) : resolve();
         });
       });
     }
-    // @todo
+    asyncFn<null>(
+      scripts.map(script => (cb: ICallback<null>) => {
+        this.loadScript(script, cb);
+      }),
+      callback
+    );
   }
 
-  private loadScript(script: IScript, callback: (error: Error) => void) {
-    this.loadFromCache(script, (err, content, stale) => {
-      if (err || stale || !content) {
-        this.loadFromRemote(script, (err2, text) => {
+  private loadScript(script: IScriptConfig, callback: ICallback<null>) {
+    LoadScriptFromStorage(this.config.prefix, script, (err, content) => {
+      if (err) {
+        LoadScriptFromXHR(script, this.config.timeout, (err2, content2) => {
           if (err2) {
-            callback(err2);
-          } else if (text) {
-            this.loadScriptEl(script, text);
-            this.saveToCache(script, text);
+            LoadScriptFallback(script, callback);
+          } else if (content2) {
+            LoadScriptEl(script, content2);
+            SaveScriptToStorage(this.config.prefix, script, content2);
           }
         });
       } else {
-        this.loadScriptEl(script, content);
+        if (content) {
+          LoadScriptEl(script, content);
+        }
       }
     });
-  }
-
-  private loadScriptEl(script: IScript, content: string) {
-    const s = document.createElement("script");
-    s.id = script.name;
-    s.innerText = content;
-    s.defer = true;
-    document.getElementsByTagName("head")[0].appendChild(s);
-  }
-
-  private loadScriptFallback(script: IScript) {
-    const s = document.createElement("script");
-    s.src = script.url;
-    s.defer = true;
-    document.getElementsByTagName("body")[0].appendChild(s);
-  }
-
-  private loadFromRemote(
-    script: IScript,
-    callback: (err: Error | null, text?: string) => void
-  ) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", script.url, true);
-    xhr.timeout = this.config.timeout;
-    xhr.onload = () => {
-      if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
-        callback(null, xhr.responseText);
-      }
-    };
-    xhr.ontimeout = xhr.onerror = () => {
-      callback(new Error(`Failed to load: ${script.url}`));
-    };
-    xhr.send();
-  }
-
-  private loadFromCache(
-    script: IScript,
-    callback: (err: Error | null, text?: string, stale?: boolean) => void
-  ) {
-    const itemKey = `${PREFIX}${script.name}`;
-    const item = storage.getItem(itemKey);
-    if (item) {
-      const data: IStorageItem = JSON.parse(item);
-      if (data.expire < new Date().getTime() || data.url !== script.url) {
-        callback(null, data.content, true);
-      } else {
-        callback(null, data.content, false);
-      }
-    } else {
-      callback(new Error(`${itemKey} is not found`));
-    }
-  }
-
-  private saveToCache(script: IScript, content: string) {
-    const itemKey = `${PREFIX}${script.name}`;
-    const data: IStorageItem = {
-      content,
-      expire: new Date().getTime() + script.maxAge,
-      name: script.name,
-      url: script.url
-    };
   }
 }
