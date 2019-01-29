@@ -1,4 +1,4 @@
-import { asyncFn, merge } from "./util";
+import { asyncFn, merge } from "../util";
 
 const asyncAdd = (
   a: number,
@@ -10,7 +10,7 @@ const asyncAdd = (
   }, 0);
 };
 
-test("merge()", () => {
+test("merge() should work", () => {
   const a = {
     a: "1",
     b: "2",
@@ -34,7 +34,7 @@ test("merge()", () => {
   });
 });
 
-test("asyncFn() ok", done => {
+test("asyncFn() should work when all tasks succeeded", done => {
   asyncFn<number>(
     [
       cb => {
@@ -55,11 +55,16 @@ test("asyncFn() ok", done => {
   );
 });
 
-test("asyncFn() error", done => {
+test("asyncFn() should work when some tasks failed", done => {
   asyncFn<number>(
     [
       cb => {
         asyncAdd(1, 1, cb);
+      },
+      cb => {
+        setTimeout(() => {
+          cb(new Error("error"), 0);
+        }, 0);
       },
       cb => {
         asyncAdd(1, 2, cb);

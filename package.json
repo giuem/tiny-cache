@@ -8,7 +8,7 @@
     "build:lib": "rollup -c",
     "build": "npm run build:types && npm run build:lib",
     "clean": "rimraf dist",
-    "test": "jest"
+    "test": "jest --silent"
   },
   "main": "dist/tiny-cache.cjs.js",
   "module": "dist/tiny-cache.esm.js",
@@ -28,7 +28,9 @@
     "@babel/preset-env": "^7.2.3",
     "@babel/preset-typescript": "^7.1.0",
     "@types/jest": "^23.3.13",
-    "jest": "^24.0.0",
+    "jest": "^23.6.0",
+    "jest-date-mock": "^1.0.7",
+    "jest-environment-jsdom-thirteen": "^0.0.2",
     "prettier": "^1.16.1",
     "rimraf": "^2.6.3",
     "rollup": "^1.1.0",
@@ -41,6 +43,7 @@
     "tslint-config-prettier": "^1.17.0",
     "tslint-eslint-rules": "^5.4.0",
     "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^3.2.4"
+    "typescript": "^3.2.4",
+    "xhr-mock": "^2.4.1"
   }
 }

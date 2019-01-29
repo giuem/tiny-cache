@@ -12,7 +12,7 @@ function createNoStorageItemError(script: IScriptConfig): Error {
 export function LoadScriptEl(script: IScriptConfig, content: string) {
   const s = document.createElement("script");
   s.id = script.name;
-  s.innerText = content;
+  s.text = content;
   s.defer = true;
   document.getElementsByTagName("head")[0].appendChild(s);
 }
@@ -22,10 +22,12 @@ export function LoadScriptFallback(
   callback: ICallback<null>
 ) {
   const s = document.createElement("script");
+  s.id = script.name;
   s.src = script.url;
-  s.defer = true;
+  // @todo: need more test
+  // s.defer = true;
   s.onload = () => {
-    callback(null, null);
+    callback(null);
   };
   s.onerror = () => {
     callback(createLoaderError(script));
@@ -44,6 +46,8 @@ export function LoadScriptFromXHR(
   xhr.onload = () => {
     if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
       callback(null, xhr.responseText);
+    } else {
+      callback(new Error(`Failed to load: ${script.url}`));
     }
   };
   xhr.ontimeout = xhr.onerror = () => {
