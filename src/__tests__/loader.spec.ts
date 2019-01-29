@@ -142,7 +142,7 @@ test("LoadScriptFromXHR() should fail when timeout", done => {
   });
 });
 
-test("LoadScriptFromStorage() and SaveScriptToStorage() should ok", async done => {
+test("LoadScriptFromStorage() and SaveScriptToStorage() should ok", done => {
   SaveScriptToStorage(PREFIX, SCRIPT, CONTENT);
   LoadScriptFromStorage(PREFIX, SCRIPT, (err, content) => {
     expect(err).toBeNull();
@@ -170,7 +170,7 @@ test("LoadScriptFromStorage() should fail when stale", done => {
   });
 });
 
-test("LoadScriptFromStorage() should fail when url changes", async done => {
+test("LoadScriptFromStorage() should fail when url changes", done => {
   SaveScriptToStorage(PREFIX, SCRIPT, CONTENT);
   LoadScriptFromStorage(PREFIX, SCRIPT_LOCAL, err => {
     expect(SCRIPT.name).toBe(SCRIPT_LOCAL.name);

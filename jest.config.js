@@ -1,7 +1,7 @@
 module.exports = {
   collectCoverage: true,
   collectCoverageFrom: ["src/**/*.ts"],
-  preset: "ts-jest",
+  // preset: "ts-jest",
   testEnvironment: "jest-environment-jsdom-thirteen",
   testEnvironmentOptions: {
     resources: "usable",

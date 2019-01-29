@@ -6,9 +6,9 @@
     "type-check": "tsc --noEmit",
     "build:types": "tsc --emitDeclarationOnly",
     "build:lib": "rollup -c",
-    "build": "npm run clean && npm run build:types && npm run build:lib",
+    "build": "NODE_ENV=production npm run clean && npm run build:types && npm run build:lib",
     "clean": "rimraf dist",
-    "test": "npm run type-check && jest --silent"
+    "test": "NODE_ENV=test npm run type-check && jest --silent"
   },
   "module": "dist/tiny-cache.esm.js",
   "browser": "dist/tiny-cache.iife.js",
@@ -28,7 +28,7 @@
     "@babel/preset-typescript": "^7.1.0",
     "@types/jest": "^23.3.13",
     "husky": "^1.3.1",
-    "jest": "^23.6.0",
+    "jest": "^24.0.0",
     "jest-date-mock": "^1.0.7",
     "jest-environment-jsdom-thirteen": "^0.0.2",
     "prettier": "^1.16.1",
@@ -38,7 +38,6 @@
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-terser": "^4.0.2",
-    "ts-jest": "^23.10.5",
     "tslint": "^5.12.0",
     "tslint-config-prettier": "^1.17.0",
     "tslint-eslint-rules": "^5.4.0",
