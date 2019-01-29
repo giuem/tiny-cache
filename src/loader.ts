@@ -78,7 +78,7 @@ export function SaveScriptToStorage(
   const key = `${prefix}${script.name}`;
   const item: IStorageItem = {
     content,
-    expire: new Date().getTime() + script.maxAge,
+    expire: new Date().getTime() + script.maxAge * 1000,
     name: script.name,
     url: script.url
   };
