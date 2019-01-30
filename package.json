@@ -7,8 +7,9 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:lib": "rollup -c",
     "build": "NODE_ENV=production npm run clean && npm run build:types && npm run build:lib",
-    "clean": "rimraf dist lib es types",
-    "test": "NODE_ENV=test npm run type-check && jest --silent"
+    "clean": "rimraf dist lib es types coverage",
+    "test": "npm run lint && npm run type-check && jest --silent",
+    "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts'"
   },
   "main": "lib/tiny-cache.js",
   "module": "es/tiny-cache.js",
