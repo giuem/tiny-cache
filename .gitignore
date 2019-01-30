@@ -15,5 +15,7 @@ node_modules/
 .vscode/*
 
 dist/
+es/
+lib/
 
 .DS_Store
