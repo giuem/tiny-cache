@@ -2,10 +2,19 @@ language: node_js
 node_js:
   - "10"
 
-cache: yarn
+cache:
+  yarn: true
+  directories:
+    - node_modules
+
+before_install:
+  - yarn global add codecov
 
 install:
-  - npm install -g codecov
+  - yarn
+
+script:
+  - yarn test
 
 after_success:
   - codecov
