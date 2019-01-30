@@ -1,7 +1,5 @@
 import * as dateMock from "jest-date-mock";
-import path from "path";
-import url from "url";
-import xhrMock from "xhr-mock";
+import nock from "nock";
 
 import {
   LoadScriptEl,
@@ -24,28 +22,27 @@ const SCRIPT: IScriptConfig = {
   url: "/a.js"
 };
 
-const SCRIPT_LOCAL: IScriptConfig = {
+const SCRIPT_NEW: IScriptConfig = {
   maxAge: 5,
   name: "a.js",
-  url: url.pathToFileURL(path.join(__dirname, "__scripts__", "a.js")).href
+  url: "/a.js?v=2"
 };
 
 const SCRIPT_BAD: IScriptConfig = {
   maxAge: 5,
   name: "a.js",
-  url: url.pathToFileURL(path.join(__dirname, "__scripts__", "b.js")).href
+  url: "/a1.js"
 };
 const PREFIX = "TC:";
 const CONTENT = "window.a = 1;";
 
 beforeEach(() => {
-  xhrMock.setup();
   localStorage.clear();
   (window as any).eval(`window.a = 0`);
 });
 
 afterEach(() => {
-  xhrMock.teardown();
+  nock.cleanAll();
   localStorage.clear();
   const el = document.getElementById(SCRIPT.name);
   if (el) {
@@ -67,7 +64,11 @@ test("LoadScriptEl() should ok", () => {
 
 test("LoadScriptFallback() should ok", done => {
   expect(window.a).toBe(0);
-  LoadScriptFallback(SCRIPT_LOCAL, err => {
+  const scope = nock("http://localhost")
+    .get("/a.js")
+    .reply(200, CONTENT);
+
+  LoadScriptFallback(SCRIPT, err => {
     expect(err).toBeNull();
     expect(window.a).toBe(1);
     done();
@@ -85,10 +86,9 @@ test("LoadScriptFallback() should fail", done => {
 
 test("LoadScriptFromXHR() should ok", done => {
   expect(window.a).toBe(0);
-  xhrMock.get("/a.js", {
-    body: CONTENT,
-    status: 200
-  });
+  const scope = nock("http://localhost")
+    .get("/a.js")
+    .reply(200, CONTENT);
   LoadScriptFromXHR(SCRIPT, 1000, (err, content) => {
     expect(err).toBeNull();
     expect(content).toBe(CONTENT);
@@ -98,10 +98,9 @@ test("LoadScriptFromXHR() should ok", done => {
 
 test("LoadScriptFromXHR() should ok when status code is 304", done => {
   expect(window.a).toBe(0);
-  xhrMock.get("/a.js", {
-    body: CONTENT,
-    status: 304
-  });
+  const scope = nock("http://localhost")
+    .get("/a.js")
+    .reply(304, CONTENT);
   LoadScriptFromXHR(SCRIPT, 1000, (err, content) => {
     expect(err).toBeNull();
     expect(content).toBe(CONTENT);
@@ -111,10 +110,10 @@ test("LoadScriptFromXHR() should ok when status code is 304", done => {
 
 test("LoadScriptFromXHR() should fail with bad status code", done => {
   expect(window.a).toBe(0);
-  xhrMock.get("/a.js", {
-    body: CONTENT,
-    status: 404
-  });
+  const scope = nock("http://localhost")
+    .get("/a.js")
+    .reply(404);
+
   LoadScriptFromXHR(SCRIPT, 1000, (err, content) => {
     expect(err).toBeDefined();
     expect(err).toBeInstanceOf(Error);
@@ -133,8 +132,11 @@ test("LoadScriptFromXHR() should fail", done => {
 
 test("LoadScriptFromXHR() should fail when timeout", done => {
   expect(window.a).toBe(0);
-  // tslint:disable-next-line no-empty
-  xhrMock.get("/a.js", () => new Promise(() => {}));
+  const scope = nock("http://localhost")
+    .get("/a.js")
+    .delayConnection(1000)
+    .reply(200, CONTENT);
+
   LoadScriptFromXHR(SCRIPT, 100, (err, content) => {
     expect(err).toBeDefined();
     expect(err).toBeInstanceOf(Error);
@@ -172,9 +174,9 @@ test("LoadScriptFromStorage() should fail when stale", done => {
 
 test("LoadScriptFromStorage() should fail when url changes", done => {
   SaveScriptToStorage(PREFIX, SCRIPT, CONTENT);
-  LoadScriptFromStorage(PREFIX, SCRIPT_LOCAL, err => {
-    expect(SCRIPT.name).toBe(SCRIPT_LOCAL.name);
-    expect(SCRIPT.url).not.toBe(SCRIPT_LOCAL.url);
+  LoadScriptFromStorage(PREFIX, SCRIPT_NEW, err => {
+    expect(SCRIPT.name).toBe(SCRIPT_NEW.name);
+    expect(SCRIPT.url).not.toBe(SCRIPT_NEW.url);
     expect(err).toBeDefined();
     expect(err).toBeInstanceOf(Error);
     done();
