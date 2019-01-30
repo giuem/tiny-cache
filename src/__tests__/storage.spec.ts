@@ -18,9 +18,18 @@ afterAll(() => {
   localStorage.clear();
 });
 
-test("getItem() should return null", () => {
-  const item = getItem(KEY);
-  expect(item).toBeNull();
+describe("getItem()", () => {
+  it("should return null when item not found", () => {
+    const item = getItem(KEY);
+    expect(item).toBeNull();
+  });
+
+  it("should return null when parsed error", () => {
+    localStorage.setItem(KEY, "bad text");
+    expect(localStorage.getItem(KEY)).toBe("bad text");
+    const item = getItem(KEY);
+    expect(item).toBeNull();
+  });
 });
 
 test("setItem() should work and getItem() should return item", () => {

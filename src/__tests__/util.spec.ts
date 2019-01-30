@@ -34,51 +34,53 @@ test("merge() should work", () => {
   });
 });
 
-test("asyncFn() should work when all tasks succeeded", done => {
-  asyncFn<number>(
-    [
-      cb => {
-        asyncAdd(1, 1, cb);
-      },
-      cb => {
-        asyncAdd(1, 2, cb);
-      },
-      cb => {
-        asyncAdd(0, 0, cb);
+describe("asyncFn()", () => {
+  it("should work when all tasks succeeded", done => {
+    asyncFn<number>(
+      [
+        cb => {
+          asyncAdd(1, 1, cb);
+        },
+        cb => {
+          asyncAdd(1, 2, cb);
+        },
+        cb => {
+          asyncAdd(0, 0, cb);
+        }
+      ],
+      (err, results) => {
+        expect(err).toBe(null);
+        expect(results).toEqual([2, 3, 0]);
+        done();
       }
-    ],
-    (err, results) => {
-      expect(err).toBe(null);
-      expect(results).toEqual([2, 3, 0]);
-      done();
-    }
-  );
-});
+    );
+  });
 
-test("asyncFn() should work when some tasks failed", done => {
-  asyncFn<number>(
-    [
-      cb => {
-        asyncAdd(1, 1, cb);
-      },
-      cb => {
-        setTimeout(() => {
-          cb(new Error("error"), 0);
-        }, 0);
-      },
-      cb => {
-        asyncAdd(1, 2, cb);
-      },
-      cb => {
-        setTimeout(() => {
-          cb(new Error("error"), 0);
-        }, 0);
+  it("should work when some tasks failed", done => {
+    asyncFn<number>(
+      [
+        cb => {
+          asyncAdd(1, 1, cb);
+        },
+        cb => {
+          setTimeout(() => {
+            cb(new Error("error"), 0);
+          }, 0);
+        },
+        cb => {
+          asyncAdd(1, 2, cb);
+        },
+        cb => {
+          setTimeout(() => {
+            cb(new Error("error"), 0);
+          }, 0);
+        }
+      ],
+      (err, results) => {
+        expect(err).toBeInstanceOf(Error);
+        expect(results).toBeUndefined();
+        done();
       }
-    ],
-    (err, results) => {
-      expect(err).toBeInstanceOf(Error);
-      expect(results).toBeUndefined();
-      done();
-    }
-  );
+    );
+  });
 });
