@@ -1,6 +1,6 @@
 {
   "name": "@giuem/tiny-cache",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A tiny solution to cache your javascript files",
   "scripts": {
     "type-check": "tsc --noEmit",
@@ -9,7 +9,8 @@
     "build": "NODE_ENV=production npm run clean && npm run build:types && npm run build:lib",
     "clean": "rimraf dist lib es types coverage",
     "test": "npm run lint && npm run type-check && jest --silent",
-    "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts'"
+    "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts'",
+    "release": "standard-version"
   },
   "main": "lib/tiny-cache.js",
   "module": "es/tiny-cache.js",
@@ -44,6 +45,7 @@
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-uglify": "^6.0.2",
+    "standard-version": "^4.4.0",
     "tslint": "^5.12.0",
     "tslint-config-prettier": "^1.17.0",
     "tslint-eslint-rules": "^5.4.0",
