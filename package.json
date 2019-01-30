@@ -16,6 +16,12 @@
   "module": "es/tiny-cache.js",
   "browser": "dist/tiny-cache.js",
   "types": "types/index.d.ts",
+  "files": [
+    "dist",
+    "es",
+    "lib",
+    "types"
+  ],
   "repository": "https://github.com/giuem/tiny-cache",
   "author": {
     "name": "GIUEM",
