@@ -47,11 +47,11 @@ export function LoadScriptFromXHR(
     if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
       callback(null, xhr.responseText);
     } else {
-      callback(new Error(`Failed to load: ${script.url}`));
+      callback(createLoaderError(script));
     }
   };
   xhr.ontimeout = xhr.onerror = () => {
-    callback(new Error(`Failed to load: ${script.url}`));
+    callback(createLoaderError(script));
   };
   xhr.send();
 }

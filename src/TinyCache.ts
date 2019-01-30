@@ -48,16 +48,20 @@ export class TinyCache {
     LoadScriptFromStorage(this.config.prefix, script, (err, content) => {
       if (err) {
         LoadScriptFromXHR(script, this.config.timeout, (err2, content2) => {
-          if (err2) {
-            LoadScriptFallback(script, callback);
-          } else if (content2) {
+          if (content2 && !err2) {
             LoadScriptEl(script, content2);
             SaveScriptToStorage(this.config.prefix, script, content2);
+            callback(null);
+          } else {
+            LoadScriptFallback(script, callback);
           }
         });
       } else {
         if (content) {
           LoadScriptEl(script, content);
+          callback(null);
+        } else {
+          LoadScriptFallback(script, callback);
         }
       }
     });

@@ -57,9 +57,12 @@ describe("asyncFn()", () => {
   });
 
   it("should work when some tasks failed", done => {
+    const f1 = jest.fn();
+    const f2 = jest.fn();
     asyncFn<number>(
       [
         cb => {
+          f1();
           asyncAdd(1, 1, cb);
         },
         cb => {
@@ -68,6 +71,7 @@ describe("asyncFn()", () => {
           }, 0);
         },
         cb => {
+          f2();
           asyncAdd(1, 2, cb);
         },
         cb => {
@@ -79,6 +83,8 @@ describe("asyncFn()", () => {
       (err, results) => {
         expect(err).toBeInstanceOf(Error);
         expect(results).toBeUndefined();
+        expect(f1).toHaveBeenCalled();
+        expect(f2).toHaveBeenCalled();
         done();
       }
     );
