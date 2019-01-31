@@ -1,7 +1,3 @@
-export interface ITinyCacheConfigInternal {
-    prefix: string;
-    timeout: number;
-}
 export interface ITinyCacheConfig {
     prefix?: string;
     timeout?: number;
