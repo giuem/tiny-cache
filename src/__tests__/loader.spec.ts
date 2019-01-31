@@ -8,6 +8,7 @@ import {
   LoadScriptFromXHR,
   SaveScriptToStorage
 } from "../loader";
+import { getItem } from "../storage";
 import { IScriptConfig } from "../types";
 declare global {
   // tslint:disable-next-line interface-name
@@ -146,6 +147,20 @@ describe("LoadScriptFromStorage()", () => {
     LoadScriptFromStorage(PREFIX, SCRIPT, (err, content) => {
       expect(err).toBeNull();
       expect(content).toBe(CONTENT);
+      done();
+    });
+  });
+
+  test("undefined maxAge", done => {
+    const s: IScriptConfig = {
+      name: "s",
+      url: "s"
+    };
+    SaveScriptToStorage(PREFIX, s, CONTENT);
+    LoadScriptFromStorage(PREFIX, s, (err, content) => {
+      expect(err).toBeNull();
+      expect(content).toBe(CONTENT);
+      expect(getItem(PREFIX + s.name).expire).toBeNull();
       done();
     });
   });

@@ -66,7 +66,10 @@ export function LoadScriptFromStorage(
   if (!item) {
     callback(createNoStorageItemError(script));
   } else {
-    if (item.url !== script.url || item.expire < new Date().getTime()) {
+    if (
+      item.url !== script.url ||
+      (item.expire && item.expire < new Date().getTime())
+    ) {
       callback(createNoStorageItemError(script));
     } else {
       callback(null, item.content);
@@ -82,7 +85,7 @@ export function SaveScriptToStorage(
   const key = `${prefix}${script.name}`;
   const item: IStorageItem = {
     content,
-    expire: new Date().getTime() + script.maxAge * 1000,
+    expire: script.maxAge ? new Date().getTime() + script.maxAge * 1000 : null,
     name: script.name,
     url: script.url
   };

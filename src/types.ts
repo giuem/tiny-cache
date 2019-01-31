@@ -11,13 +11,13 @@ export interface ITinyCacheConfig {
 export interface IScriptConfig {
   readonly name: string;
   readonly url: string;
-  readonly maxAge: number;
+  readonly maxAge?: number;
 }
 
 export interface IStorageItem {
   readonly name: string;
   url: string;
-  expire: number;
+  expire: number | null;
   content: string;
 }
 

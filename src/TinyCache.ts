@@ -13,8 +13,6 @@ import {
 } from "./types";
 import { asyncFn, merge } from "./util";
 
-// function saveToCache()
-
 export class TinyCache {
   private config: ITinyCacheConfigInternal = {
     prefix: "TC:",
