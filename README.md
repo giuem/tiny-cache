@@ -83,6 +83,10 @@ tc.load([...]).then(() => {
 });
 ```
 
+### TinyCache.remove(script: object)
+
+Remove localStorage item. The script object is the same as `load` method's.
+
 ## License
 
 MIT

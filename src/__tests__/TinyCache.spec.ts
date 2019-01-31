@@ -230,4 +230,25 @@ describe("TinyCache", () => {
       });
     });
   });
+
+  describe(".remove()", () => {
+    const tc = new TinyCache({ timeout: 100 });
+
+    beforeEach(() => {
+      mockHTTP();
+      localStorage.clear();
+    });
+
+    afterEach(() => {
+      nock.cleanAll();
+    });
+
+    it("should ok", () => {
+      return tc.load([SCRIPT_A_OK]).then(() => {
+        expect(localStorage.length).toBe(1);
+        tc.remove(SCRIPT_A_OK);
+        expect(localStorage.length).toBe(0);
+      });
+    });
+  });
 });

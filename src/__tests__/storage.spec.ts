@@ -1,4 +1,4 @@
-import { getItem, setItem } from "../storage";
+import { getItem, removeItem, setItem } from "../storage";
 import { IStorageItem } from "../types";
 
 const ITEM: IStorageItem = {
@@ -37,4 +37,11 @@ test("setItem() should work and getItem() should return item", () => {
   expect(localStorage.getItem(KEY)).toBe(VALUE);
   const item = getItem(KEY);
   expect(item).toEqual(ITEM);
+});
+
+test("removeItem()", () => {
+  setItem(KEY, ITEM);
+  expect(localStorage.length).toBe(1);
+  removeItem(KEY);
+  expect(localStorage.length).toBe(0);
 });

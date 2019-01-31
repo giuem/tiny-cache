@@ -22,3 +22,11 @@ export function setItem(key: string, item: IStorageItem) {
     // ignore error
   }
 }
+
+export function removeItem(key: string) {
+  try {
+    localStorage.removeItem(key);
+  } catch (err) {
+    // ignore error
+  }
+}

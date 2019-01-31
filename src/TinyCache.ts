@@ -5,6 +5,7 @@ import {
   LoadScriptFromXHR,
   SaveScriptToStorage
 } from "./loader";
+import { removeItem } from "./storage";
 import {
   ICallback,
   IScriptConfig,
@@ -45,6 +46,10 @@ export class TinyCache {
       }),
       callback
     );
+  }
+
+  public remove(script: IScriptConfig) {
+    removeItem(`${this.config.prefix}${script.name}`);
   }
 
   private loadScript(script: IScriptConfig, callback: ICallback<null>) {
