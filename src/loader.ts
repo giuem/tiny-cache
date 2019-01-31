@@ -1,6 +1,8 @@
 import { getItem, setItem } from "./storage";
 import { ICallback, IScriptConfig, IStorageItem } from "./types";
 
+const d = document;
+
 function createLoaderError(script: IScriptConfig): Error {
   return new Error(`Failed to load ${script.name}: ${script.url}`);
 }
@@ -10,18 +12,18 @@ function createNoStorageItemError(script: IScriptConfig): Error {
 }
 
 export function LoadScriptEl(script: IScriptConfig, content: string) {
-  const s = document.createElement("script");
+  const s = d.createElement("script");
   s.id = script.name;
   s.text = content;
   s.defer = true;
-  document.getElementsByTagName("head")[0].appendChild(s);
+  d.getElementsByTagName("head")[0].appendChild(s);
 }
 
 export function LoadScriptFallback(
   script: IScriptConfig,
   callback: ICallback<null>
 ) {
-  const s = document.createElement("script");
+  const s = d.createElement("script");
   s.id = script.name;
   s.src = script.url;
   // @todo: need more test
@@ -32,7 +34,7 @@ export function LoadScriptFallback(
   s.onerror = () => {
     callback(createLoaderError(script));
   };
-  document.getElementsByTagName("body")[0].appendChild(s);
+  d.getElementsByTagName("body")[0].appendChild(s);
 }
 
 export function LoadScriptFromXHR(
