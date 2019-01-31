@@ -30,6 +30,18 @@ describe("getItem()", () => {
     const item = getItem(KEY);
     expect(item).toBeNull();
   });
+
+  it("should return null when item is broken", () => {
+    localStorage.setItem(
+      KEY,
+      JSON.stringify({
+        content: 11,
+        url: "a"
+      })
+    );
+    const item = getItem(KEY);
+    expect(item).toBeNull();
+  });
 });
 
 test("setItem() should work and getItem() should return item", () => {
