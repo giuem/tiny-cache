@@ -52,21 +52,20 @@ tc.load([
 
 ## API
 
-### TinyCache.constructor(config?)
+### TinyCache.constructor(config?: object)
 
 The `constructor` accepts an optional config with the following parameters:
 
 * `prefix`: localStorage key prefix. Defaults to `TC:`.
 * `timeout`: timeout for xhr request. Defaults to `6000` (6 seconds).
 
-### TinyCache.load(scripts, callback?): Promise\<void\>
+### TinyCache.load(scripts: object[], callback?: (err: Error | null) => void): Promise\<void\>
 
 The `load` method loads a set of scripts, every script object has the following properties:
 
 * `name`: unique name for the script.
-* `url`: the URI of the script. Also identities the script, script will be updated if changed. Because of the CORS restrictions, loading a script without CORS will fallback to script tag mode and won't be cached.
+* `url`: the URI of the script. Also identity the script's content, script will be updated if changed. Because of the CORS restrictions, loading a script without CORS header will fallback to script tag mode and won't be cached.
 * `maxAge`: maxAge for the script, specify how long before the script is expired(in seconds).
-
 It supports both callback and promise style. For example,
 
 ```javascript
