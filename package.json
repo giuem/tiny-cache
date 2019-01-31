@@ -8,7 +8,7 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:lib": "NODE_ENV=production rollup -c",
     "build": "npm run clean && npm run build:types && npm run build:lib",
-    "clean": "rimraf dist lib es types coverage",
+    "clean": "rimraf dist lib es types",
     "test": "npm run lint && npm run type-check && jest --silent",
     "test:e2e": "rollup -c",
     "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts'",
