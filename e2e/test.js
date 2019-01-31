@@ -24,7 +24,7 @@ describe("localStorage", function() {
 });
 
 describe("TinyCache.load()", function() {
-  var tc = new TinyCache.TinyCache();
+  var tc = new TinyCache();
 
   describe(".load()", function() {
     it("should work with callback", function(done) {

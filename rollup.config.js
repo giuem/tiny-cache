@@ -2,6 +2,7 @@ import babel from "rollup-plugin-babel";
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import { uglify } from "rollup-plugin-uglify";
+import { noMutate as assign } from "object-assign-deep";
 
 import pkg from "./package.json";
 
@@ -28,50 +29,43 @@ const CommonConfig = {
   plugins
 };
 
-const BrowserConfig = {
-  ...CommonConfig,
+const BrowserConfig = assign(CommonConfig, {
+  input: "src/index.browser.ts",
   output: {
     file: pkg.browser,
     format: "iife",
     name,
     globals: {}
   }
-};
+});
 
-const BrowserMinConfig = {
-  ...CommonConfig,
-  plugins: [...plugins, uglify()],
+const BrowserMinConfig = assign(BrowserConfig, {
+  plugins: [...plugins, uglify({ sourcemap: false })],
   output: {
-    file: pkg.browser.replace(".js", ".min.js"),
-    format: "iife",
-    name,
-    globals: {}
+    file: pkg.browser.replace(".js", ".min.js")
   }
-};
+});
 
-const CommonjsConfig = {
-  ...CommonConfig,
+const CommonjsConfig = assign(CommonConfig, {
   output: {
     file: pkg.main,
     format: "cjs"
   }
-};
+});
 
-const ESMConfig = {
-  ...CommonConfig,
+const ESMConfig = assign(CommonConfig, {
   output: {
     file: pkg.module,
     format: "esm"
   }
-};
+});
 
 export default () => {
   if (isProduction) {
     return [BrowserConfig, BrowserMinConfig, CommonjsConfig, ESMConfig];
   } else {
     return (async () => {
-      return {
-        ...BrowserConfig,
+      return assign(BrowserConfig, {
         plugins: [
           ...plugins,
           (await import("rollup-plugin-serve"))({
@@ -83,7 +77,7 @@ export default () => {
           clearScreen: true,
           include: ["src/**", "e2e/**"]
         }
-      };
+      });
     })();
   }
 };

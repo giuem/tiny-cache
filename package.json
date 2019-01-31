@@ -46,6 +46,7 @@
     "jest-date-mock": "^1.0.7",
     "jest-environment-jsdom-thirteen": "^0.0.2",
     "nock": "^10.0.6",
+    "object-assign-deep": "^0.4.0",
     "prettier": "^1.16.1",
     "rimraf": "^2.6.3",
     "rollup": "^1.1.0",
