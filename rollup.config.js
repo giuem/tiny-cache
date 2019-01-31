@@ -8,6 +8,8 @@ import pkg from "./package.json";
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
 const name = "TinyCache";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 const plugins = [
   resolve({ extensions }),
 
@@ -63,4 +65,25 @@ const ESMConfig = {
   }
 };
 
-export default [BrowserConfig, BrowserMinConfig, CommonjsConfig, ESMConfig];
+export default () => {
+  if (isProduction) {
+    return [BrowserConfig, BrowserMinConfig, CommonjsConfig, ESMConfig];
+  } else {
+    return (async () => {
+      return {
+        ...BrowserConfig,
+        plugins: [
+          ...plugins,
+          (await import("rollup-plugin-serve"))({
+            open: true,
+            contentBase: ["dist", "e2e"]
+          })
+        ],
+        watch: {
+          clearScreen: true,
+          include: ["src/**", "e2e/**"]
+        }
+      };
+    })();
+  }
+};
