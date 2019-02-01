@@ -6,7 +6,7 @@
 [![npm version](https://flat.badgen.net/npm/v/@giuem/tiny-cache)](https://www.npmjs.com/package/@giuem/tiny-cache)
 [![npm license](https://flat.badgen.net/npm/license/@giuem/tiny-cache)](https://github.com/giuem/tiny-cache/blob/master/LICENSE)
 
-A tiny library (**~ 1kb Gzipped**) that cache your JavaScript files in localStorage.
+A tiny library (**\~ 1kb Gzipped**) that cache your JavaScript files in localStorage.
 
 **:heavy_exclamation_mark:DO NOT USE IT IN PRODUCTION.** This library is under development, its API and implementation may be changed at any time.
 
