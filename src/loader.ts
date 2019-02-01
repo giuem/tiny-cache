@@ -52,7 +52,7 @@ export function LoadScriptFromXHR(
       callback(createLoaderError(script));
     }
   };
-  xhr.ontimeout = xhr.onerror = () => {
+  xhr.ontimeout = xhr.onerror = xhr.onabort = () => {
     callback(createLoaderError(script));
   };
   xhr.send();
