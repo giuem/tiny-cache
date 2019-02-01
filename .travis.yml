@@ -16,6 +16,7 @@ install:
 script:
   - yarn test
   - yarn build
+  - yarn test:size
 
 after_success:
   - codecov
