@@ -34,12 +34,21 @@ beforeEach(function() {
   mockServer();
 
   window.a = window.b = 0;
+  delete window.Cookies;
+  delete window.$;
+  delete window.jQuery;
 
   localStorage.clear();
 });
 
 afterEach(function() {
   restoreServer();
+
+  delete window.a;
+  delete window.b;
+  delete window.Cookies;
+  delete window.$;
+  delete window.jQuery;
 
   localStorage.clear();
 
@@ -189,8 +198,6 @@ describe("TinyCache.load()", function() {
     it("should support cors", function(done) {
       restoreServer();
 
-      window.Cookies = undefined;
-
       chai.expect(localStorage.getItem("TC:a-js")).to.not.exist;
       chai.expect(window.Cookies).to.not.exist;
 
@@ -213,29 +220,24 @@ describe("TinyCache.load()", function() {
     });
 
     it("should fallback with no-cors resource", function(done) {
+      this.timeout(5000);
+
       restoreServer();
 
-      var hostname = document.location.hostname;
-      var origin = document.location.origin;
-      if (hostname === "localhost") {
-        origin = origin.replace("localhost", "127.0.0.1");
-      } else if (hostname === "127.0.0.1") {
-        origin = origin.replace("127.0.0.1", "localhost");
-      } else {
-        return this.skip();
-      }
+      chai.expect(window.Cookies).to.not.exist;
 
       tc.load(
         [
           {
             name: "a-js",
-            url: origin + "/assets/a.js"
+            url:
+              "https://never-cors.now.sh/https://cdn.jsdelivr.net/npm/js-cookie@2.2.0/src/js.cookie.min.js"
           }
         ],
         function(err) {
           chai.expect(err).to.be.null;
           chai.expect(localStorage.length).to.equal(0);
-          chai.expect(window.a).to.equal(1);
+          chai.expect(window.Cookies).to.exist;
 
           done();
         }
@@ -243,41 +245,38 @@ describe("TinyCache.load()", function() {
     });
 
     it("should fallback in order with no-cors resource", function(done) {
+      this.timeout(5000);
+
       restoreServer();
 
-      var hostname = document.location.hostname;
-      var origin = document.location.origin;
-      if (hostname === "localhost") {
-        origin = origin.replace("localhost", "127.0.0.1");
-      } else if (hostname === "127.0.0.1") {
-        origin = origin.replace("127.0.0.1", "localhost");
-      } else {
-        return this.skip();
-      }
+      chai.expect(window.Cookies).to.not.exist;
+      chai.expect(window.jQuery).to.not.exist;
 
       tc.load(
         [
           {
             name: "a-js",
-            url: origin + "/assets/a.js"
+            url:
+              "https://never-cors.now.sh/https://cdn.jsdelivr.net/npm/js-cookie@2.2.0/src/js.cookie.min.js"
           }
         ],
         function(err) {
           chai.expect(err).to.be.null;
           chai.expect(localStorage.length).to.equal(0);
-          chai.expect(window.a).to.equal(1);
-          chai.expect(window.b).to.equal(0);
+          chai.expect(window.Cookies).to.exist;
+          chai.expect(window.jQuery).to.not.exist;
 
           tc.load(
             [
               {
                 name: "b-js",
-                url: origin + "/assets/b.js"
+                url:
+                  "https://never-cors.now.sh/https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"
               }
             ],
             function(err) {
               chai.expect(localStorage.length).to.equal(0);
-              chai.expect(window.b).to.equal(1);
+              chai.expect(window.jQuery).to.exist;
 
               done();
             }
