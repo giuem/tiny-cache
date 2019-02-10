@@ -104,6 +104,16 @@ describe("LoadScriptFromXHR()", () => {
     });
   });
 
+  it("should error when XMLHttpRequest is undefined", done => {
+    const xhr = window.XMLHttpRequest;
+    window.XMLHttpRequest = undefined;
+    LoadScriptFromXHR(SCRIPT, 1000, (err, content) => {
+      window.XMLHttpRequest = xhr;
+      expect(err).toBeInstanceOf(Error);
+      done();
+    });
+  });
+
   it("should ok with 304 status code", done => {
     const scope = nock("http://localhost")
       .get("/a.js")

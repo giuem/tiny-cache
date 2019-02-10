@@ -42,6 +42,10 @@ export function LoadScriptFromXHR(
   timeout: number,
   callback: ICallback<string>
 ) {
+  const error = createLoaderError(script);
+  if (!XMLHttpRequest) {
+    return callback(error);
+  }
   const xhr = new XMLHttpRequest();
   xhr.open("GET", script.url, true);
   xhr.timeout = timeout;
@@ -49,11 +53,11 @@ export function LoadScriptFromXHR(
     if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
       callback(null, xhr.responseText);
     } else {
-      callback(createLoaderError(script));
+      callback(error);
     }
   };
   xhr.ontimeout = xhr.onerror = xhr.onabort = () => {
-    callback(createLoaderError(script));
+    callback(error);
   };
   xhr.send();
 }
