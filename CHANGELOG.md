@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.1.2"></a>
+## [0.1.2](https://github.com/giuem/tiny-cache/compare/v0.1.1...v0.1.2) (2019-02-10)
+
+
+### Bug Fixes
+
+* **TinyCache:** load method returns promise only if promise is supported ([4f8b2bd](https://github.com/giuem/tiny-cache/commit/4f8b2bd))
+* **xhr:** add onabort handler ([2e00a6b](https://github.com/giuem/tiny-cache/commit/2e00a6b))
+* **xhr:** throw error when XMLHttpRequest is undefined (for legacy browser) ([9132c4a](https://github.com/giuem/tiny-cache/commit/9132c4a))
+
+
+
 <a name="0.1.1"></a>
 ## [0.1.1](https://github.com/giuem/tiny-cache/compare/v0.1.0...v0.1.1) (2019-01-31)
 

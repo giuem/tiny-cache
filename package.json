@@ -1,6 +1,6 @@
 {
   "name": "@giuem/tiny-cache",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A tiny solution to cache your javascript files",
   "scripts": {
     "dev": "rollup -c -w",
@@ -69,8 +69,10 @@
       "pre-commit": "npm test"
     }
   },
-  "bundlesize": [{
-    "path": "./dist/tiny-cache.min.js",
-    "maxSize": "1.5kB"
-  }]
+  "bundlesize": [
+    {
+      "path": "./dist/tiny-cache.min.js",
+      "maxSize": "1.5kB"
+    }
+  ]
 }
