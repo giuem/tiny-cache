@@ -19,7 +19,7 @@ export class TinyCache {
     merge(this.config, config);
   }
 
-  public load(scripts: IScriptConfig[]): Promise<void>;
+  public load(scripts: IScriptConfig[]): Promise<void> | void;
   public load(
     scripts: IScriptConfig[],
     callback: ICallback<Array<null | undefined>>
@@ -29,11 +29,13 @@ export class TinyCache {
     callback?: ICallback<Array<null | undefined>>
   ) {
     if (!callback) {
-      return new Promise<void>((resolve, reject) => {
-        this.load(scripts, err => {
-          err ? reject(err) : resolve();
-        });
-      });
+      return Promise
+        ? new Promise<void>((resolve, reject) => {
+            this.load(scripts, err => {
+              err ? reject(err) : resolve();
+            });
+          })
+        : void 0;
     }
     asyncFn<null>(
       scripts.map(script => (cb: ICallback<null>) => {
