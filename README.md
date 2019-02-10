@@ -1,10 +1,10 @@
 # TinyCache
 
-[![travis](https://flat.badgen.net/travis/giuem/tiny-cache)](https://travis-ci.com/giuem/tiny-cache)
-[![codecov](https://flat.badgen.net/codecov/c/github/giuem/tiny-cache)](https://codecov.io/gh/giuem/tiny-cache)
-[![size](https://flat.badgen.net/bundlephobia/minzip/@giuem/tiny-cache)](https://bundlephobia.com/result?p=@giuem/tiny-cache)
-[![npm version](https://flat.badgen.net/npm/v/@giuem/tiny-cache)](https://www.npmjs.com/package/@giuem/tiny-cache)
-[![npm license](https://flat.badgen.net/npm/license/@giuem/tiny-cache)](https://github.com/giuem/tiny-cache/blob/master/LICENSE)
+[![travis](https://img.shields.io/travis/com/giuem/tiny-cache.svg?style=flat-square)](https://travis-ci.com/giuem/tiny-cache)
+[![codecov](https://img.shields.io/codecov/c/github/giuem/tiny-cache.svg?style=flat-square)](https://codecov.io/gh/giuem/tiny-cache)
+[![size](https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@giuem/tiny-cache@latest/dist/tiny-cache.min.js?compression=gzip&style=flat-square)](https://cdn.jsdelivr.net/npm/@giuem/tiny-cache@latest/dist/tiny-cache.min.js)
+[![npm version](https://img.shields.io/npm/v/@giuem/tiny-cache.svg?style=flat-square)](https://www.npmjs.com/package/@giuem/tiny-cache)
+[![npm license](https://img.shields.io/npm/l/@giuem/tiny-cache.svg?style=flat-square)](https://github.com/giuem/tiny-cache/blob/master/LICENSE)
 
 A tiny library (**\~ 1kb Gzipped**) that cache your JavaScript files in localStorage.
 
