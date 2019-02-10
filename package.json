@@ -1,6 +1,6 @@
 {
   "name": "@giuem/tiny-cache",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A tiny solution to cache your javascript files",
   "scripts": {
     "dev": "rollup -c -w",
