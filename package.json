@@ -57,7 +57,7 @@
     "rollup-plugin-node-resolve": "4.0.0",
     "rollup-plugin-serve": "1.0.1",
     "rollup-plugin-uglify": "6.0.2",
-    "standard-version": "4.4.0",
+    "standard-version": "5.0.0",
     "tslint": "5.12.1",
     "tslint-config-prettier": "1.18.0",
     "tslint-eslint-rules": "5.4.0",
