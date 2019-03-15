@@ -164,6 +164,13 @@ describe("TinyCache", () => {
         });
     });
 
+    test("load noCache", () => {
+      return load([Object.assign({ noCache: true }, SCRIPT_A_OK)]).then(() => {
+        expect(window.a).toBe(1);
+        expect(localStorage.length).toBe(0);
+      });
+    });
+
     it("should update when url changed", () => {
       expect(window.a).toBe(0);
       return load([SCRIPT_A_OK])

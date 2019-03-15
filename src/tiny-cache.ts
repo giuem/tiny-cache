@@ -45,6 +45,11 @@ function remove(resource: IResourceConfig) {
 
 function loadJS(js: IResourceConfig, callback: ICallback<void>) {
   const key = `${config.prefix}${js.name}`;
+
+  if (js.noCache) {
+    return injectElement(key, js.url, callback);
+  }
+
   const cached = getItem(key);
   // cached, no update, no expired
   if (

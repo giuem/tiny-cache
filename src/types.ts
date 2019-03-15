@@ -7,6 +7,7 @@ export interface IResourceConfig {
   readonly name: string;
   readonly url: string;
   readonly maxAge?: number;
+  readonly noCache?: boolean;
 }
 
 export interface IStorageItem {

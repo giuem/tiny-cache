@@ -66,6 +66,7 @@ The `load` method loads a set of resources, every resource object has the follow
 * `name`: unique name for the script.
 * `url`: the URI of the script. Also identity the script's content, script will be updated if changed. Because of the CORS restrictions, loading a script without CORS header will fallback to `<script>` tag and won't be cached in localStorage.
 * `maxAge`: maxAge for the script. Specify how long before the script is expired (in seconds). If not provided, script will never be expired.
+* `noCache`: load via HTML tag directly.
 
 This method supports both callback and promise style. For example,
 
