@@ -10,7 +10,7 @@ function isBrokenItem(item: IStorageItem): boolean {
   );
 }
 
-export function getItem(key: string): IStorageItem | null {
+function getItem(key: string): IStorageItem | null {
   let parsed: IStorageItem | null = null;
   try {
     const text = storage.getItem(key);
@@ -26,7 +26,7 @@ export function getItem(key: string): IStorageItem | null {
   return parsed;
 }
 
-export function setItem(key: string, item: IStorageItem) {
+function setItem(key: string, item: IStorageItem) {
   try {
     storage.setItem(key, JSON.stringify(item));
   } catch (err) {
@@ -34,10 +34,12 @@ export function setItem(key: string, item: IStorageItem) {
   }
 }
 
-export function removeItem(key: string) {
+function removeItem(key: string) {
   try {
     localStorage.removeItem(key);
   } catch (err) {
     // ignore error
   }
 }
+
+export { getItem, setItem, removeItem };
