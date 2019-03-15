@@ -24,6 +24,9 @@ Or insert script directly,
 
 ``` html
 <script src="https://cdn.jsdelivr.net/npm/@giuem/tiny-cache/dist/tiny-cache.min.js"></script>
+<script>
+TinyCache.load(/* ... */);
+</script>
 ```
 
 ## Usage
@@ -32,21 +35,15 @@ For Node.js or modern frontend, require/import it first,
 
 ```javascript
 // CommonJS
-const { TinyCache } = require("@giuem/tiny-cache");
+const { load } = require("@giuem/tiny-cache");
 // ES Module
-import { TinyCache } from "@giuem/tiny-cache";
-```
-
-Then, initialize a TinyCache instance:
-
-```javascript
-const tc = new TinyCache();
+import { load } from "@giuem/tiny-cache";
 ```
 
 Now you can load your JavaScript files,
 
 ```javascript
-tc.load([
+load([
     { name: "script-1", url: "./script-1.js" },
     { name: "script-2", url: "./script-2.js", maxAge: 86400 },
     // more files ...
@@ -55,16 +52,16 @@ tc.load([
 
 ## API
 
-### TinyCache.constructor(config?: object)
+### TinyCache.configure(config: object)
 
-The `constructor` accepts an optional config with the following parameters:
+Configure TinyCache, the `config` accepts an optional config with the following parameters:
 
 * `prefix`: localStorage key prefix. Defaults to `TC:`.
 * `timeout`: timeout for xhr request. Defaults to `6000` (6 seconds).
 
-### TinyCache.load(scripts: object[], callback?: (err: Error | null) => void): Promise\<void\>
+### TinyCache.load(resources: [], callback?): Promise\<void\>
 
-The `load` method loads a set of scripts, every script object has the following properties:
+The `load` method loads a set of resources, every resource object has the following properties:
 
 * `name`: unique name for the script.
 * `url`: the URI of the script. Also identity the script's content, script will be updated if changed. Because of the CORS restrictions, loading a script without CORS header will fallback to `<script>` tag and won't be cached in localStorage.
@@ -73,7 +70,7 @@ The `load` method loads a set of scripts, every script object has the following 
 This method supports both callback and promise style. For example,
 
 ```javascript
-tc.load([...], function(err) {
+TinyCache.load([...], function(err) {
     if (err) {
         console.error(err);
         return;
@@ -81,14 +78,14 @@ tc.load([...], function(err) {
     // scripts loaded
 });
 // or
-tc.load([...]).then(() => {
+TinyCache.load([...]).then(() => {
     // scripts loaded
 }).catch(err => {
     console.error(err);
 });
 ```
 
-### TinyCache.remove(script: object)
+### TinyCache.remove(resource: object)
 
 Remove localStorage item. The script object is the same as `load` method's.
 
