@@ -1,2 +1,2 @@
-export { TinyCache } from "./TinyCache";
+export * from "./tiny-cache";
 export * from "./types";

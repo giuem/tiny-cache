@@ -31,8 +31,6 @@ function restoreServer() {
 }
 
 beforeEach(function() {
-  tc = new TinyCache();
-
   mockServer();
 
   window.a = window.b = 0;
@@ -44,8 +42,6 @@ beforeEach(function() {
 });
 
 afterEach(function() {
-  tc = null;
-
   restoreServer();
 
   delete window.a;
@@ -79,7 +75,7 @@ describe("localStorage", function() {
 describe("TinyCache.load()", function() {
   describe(".load()", function() {
     it("should work with callback", function(done) {
-      tc.load(
+      TinyCache.load(
         [
           { name: "a-js", url: "/assets/a.js" },
           { name: "b-js", url: "/assets/b.js" }
@@ -100,7 +96,7 @@ describe("TinyCache.load()", function() {
         return this.skip();
       }
 
-      tc.load([
+      TinyCache.load([
         { name: "a-js", url: "/assets/a.js" },
         { name: "b-js", url: "/assets/b.js" }
       ])
@@ -117,13 +113,13 @@ describe("TinyCache.load()", function() {
     });
 
     it("should load in order", function(done) {
-      tc.load([{ name: "a-js", url: "/assets/a.js" }], function(err) {
+      TinyCache.load([{ name: "a-js", url: "/assets/a.js" }], function(err) {
         chai.expect(err).to.be.null;
         chai.expect(localStorage.length).to.equal(1);
         chai.expect(window.a).to.equal(1);
         chai.expect(window.b).to.equal(0);
 
-        tc.load([{ name: "b-js", url: "/assets/b.js" }], function(err) {
+        TinyCache.load([{ name: "b-js", url: "/assets/b.js" }], function(err) {
           chai.expect(err).to.be.null;
           chai.expect(localStorage.length).to.equal(2);
           chai.expect(window.b).to.equal(1);
@@ -134,12 +130,12 @@ describe("TinyCache.load()", function() {
     });
 
     it("should cache", function(done) {
-      tc.load([{ name: "a-js", url: "/assets/a.js" }], function(err) {
+      TinyCache.load([{ name: "a-js", url: "/assets/a.js" }], function(err) {
         chai.expect(err).to.be.null;
         chai.expect(localStorage.length).to.equal(1);
         chai.expect(window.a).to.equal(1);
 
-        tc.load([{ name: "a-js", url: "/assets/a.js" }], function(err) {
+        TinyCache.load([{ name: "a-js", url: "/assets/a.js" }], function(err) {
           chai.expect(err).to.be.null;
           chai.expect(window.a).to.equal(2);
           chai.expect(server.requests.length).to.equal(1);
@@ -150,7 +146,7 @@ describe("TinyCache.load()", function() {
     });
 
     it("should overwrite when url changed", function(done) {
-      tc.load(
+      TinyCache.load(
         [
           { name: "a-js", url: "/assets/a.js" },
           { name: "b-js", url: "/assets/b.js" }
@@ -162,7 +158,7 @@ describe("TinyCache.load()", function() {
           chai.expect(window.b).to.equal(1);
           chai.expect(server.requests.length).to.equal(2);
 
-          tc.load([{ name: "a-js", url: "/assets/a-2.js" }], function(err) {
+          TinyCache.load([{ name: "a-js", url: "/assets/a-2.js" }], function(err) {
             chai.expect(err).to.be.null;
             chai.expect(window.a).to.equal(-1);
             chai.expect(server.requests.length).to.equal(3);
@@ -179,13 +175,13 @@ describe("TinyCache.load()", function() {
         { name: "a-js", url: "/assets/a.js", maxAge: 1 },
         { name: "b-js", url: "/assets/b.js", maxAge: 10 }
       ];
-      tc.load(resources, function(err) {
+      TinyCache.load(resources, function(err) {
         chai.expect(err).to.be.null;
         chai.expect(server.requests.length).to.equal(2);
 
         clock.tick(2000); // 2 seconds
 
-        tc.load(resources, function(err) {
+        TinyCache.load(resources, function(err) {
           chai.expect(err).to.be.null;
           chai.expect(server.requests.length).to.equal(3);
 
@@ -203,7 +199,7 @@ describe("TinyCache.load()", function() {
       chai.expect(localStorage.getItem("TC:a-js")).to.not.exist;
       chai.expect(window.Cookies).to.not.exist;
 
-      tc.load(
+      TinyCache.load(
         [
           {
             name: "a-js",
@@ -228,7 +224,7 @@ describe("TinyCache.load()", function() {
 
       chai.expect(window.Cookies).to.not.exist;
 
-      tc.load(
+      TinyCache.load(
         [
           {
             name: "a-js",
@@ -254,7 +250,7 @@ describe("TinyCache.load()", function() {
       chai.expect(window.Cookies).to.not.exist;
       chai.expect(window.jQuery).to.not.exist;
 
-      tc.load(
+      TinyCache.load(
         [
           {
             name: "a-js",
@@ -268,7 +264,7 @@ describe("TinyCache.load()", function() {
           chai.expect(window.Cookies).to.exist;
           chai.expect(window.jQuery).to.not.exist;
 
-          tc.load(
+          TinyCache.load(
             [
               {
                 name: "b-js",
@@ -288,7 +284,7 @@ describe("TinyCache.load()", function() {
     });
 
     it("should work when some resources are broken", function(done) {
-      tc.load(
+      TinyCache.load(
         [
           { name: "b-js", url: "/assets/b2.js" },
           { name: "a-js", url: "/assets/a.js" },
@@ -310,7 +306,7 @@ describe("TinyCache.load()", function() {
 
       localStorage.setItem("TC:a-js", bad_text);
 
-      tc.load([{ name: "a-js", url: "/assets/a.js" }], function(err) {
+      TinyCache.load([{ name: "a-js", url: "/assets/a.js" }], function(err) {
         chai.expect(err).to.be.null;
         chai.expect(localStorage.length).to.equal(1);
         chai.expect(localStorage.getItem("TC:a-js")).to.not.equal(bad_text);
@@ -323,12 +319,12 @@ describe("TinyCache.load()", function() {
 
   describe(".remove()", function() {
     it("should remove", function(done) {
-      tc.load([{ name: "a-js", url: "/assets/a.js" }], function(err) {
+      TinyCache.load([{ name: "a-js", url: "/assets/a.js" }], function(err) {
         chai.expect(err).to.be.null;
         chai.expect(localStorage.length).to.equal(1);
         chai.expect(window.a).to.equal(1);
 
-        tc.remove({ name: "a-js", url: "/assets/a.js" });
+        TinyCache.remove({ name: "a-js", url: "/assets/a.js" });
 
         chai.expect(localStorage.length).to.equal(0);
         chai.expect(window.a).to.equal(1);

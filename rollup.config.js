@@ -30,7 +30,7 @@ const CommonConfig = {
 };
 
 const BrowserConfig = assign(CommonConfig, {
-  input: "src/index.browser.ts",
+  // input: "src/index.browser.ts",
   output: {
     file: pkg.browser,
     format: "iife",

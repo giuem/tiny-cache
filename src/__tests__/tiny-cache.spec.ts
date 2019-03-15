@@ -1,10 +1,9 @@
 import * as dateMock from "jest-date-mock";
 import nock from "nock";
 
-import { SaveScriptToStorage } from "../loader";
 import { getItem, setItem } from "../storage";
-import { TinyCache } from "../TinyCache";
-import { IScriptConfig } from "../types";
+import { configure, load, remove } from "../tiny-cache";
+import { IResourceConfig } from "../types";
 
 declare global {
   // tslint:disable-next-line interface-name
@@ -16,37 +15,37 @@ declare global {
     e: number;
   }
 }
-const SCRIPT_A_OK: IScriptConfig = {
+const SCRIPT_A_OK: IResourceConfig = {
   maxAge: 3600,
   name: "a.js",
   url: "/a.js"
 };
 
-const SCRIPT_A_ANOTHER: IScriptConfig = {
+const SCRIPT_A_ANOTHER: IResourceConfig = {
   maxAge: 3600,
   name: "a.js",
   url: "/a2.js"
 };
 
-const SCRIPT_B_BAD: IScriptConfig = {
+const SCRIPT_B_BAD: IResourceConfig = {
   maxAge: 3600,
   name: "b.js",
   url: "/b.js"
 };
 
-const SCRIPT_C_STALE: IScriptConfig = {
+const SCRIPT_C_STALE: IResourceConfig = {
   maxAge: 10,
   name: "c.js",
   url: "/c.js"
 };
 
-const SCRIPT_D_CORS: IScriptConfig = {
+const SCRIPT_D_CORS: IResourceConfig = {
   maxAge: 3600,
   name: "d.js",
   url: "http://example.com/d.js"
 };
 
-const SCRIPT_E_NO_CORS: IScriptConfig = {
+const SCRIPT_E_NO_CORS: IResourceConfig = {
   maxAge: 3600,
   name: "e.js",
   url: "http://example.com/e.js"
@@ -80,25 +79,23 @@ beforeEach(() => {
 });
 
 describe("TinyCache", () => {
-  describe(".constructor()", () => {
-    it("should work with empty parameter", () => {
-      expect(() => new TinyCache()).not.toThrow();
-    });
+  // describe(".constructor()", () => {
+  //   it("should work with empty parameter", () => {
+  //     expect(() => new TinyCache()).not.toThrow();
+  //   });
 
-    it("should work with parameter provided", () => {
-      expect(
-        () =>
-          new TinyCache({
-            prefix: "1",
-            timeout: 1000
-          })
-      ).not.toThrow();
-    });
-  });
+  //   it("should work with parameter provided", () => {
+  //     expect(
+  //       () =>
+  //         new TinyCache({
+  //           prefix: "1",
+  //           timeout: 1000
+  //         })
+  //     ).not.toThrow();
+  //   });
+  // });
 
   describe(".load()", () => {
-    const tc = new TinyCache({ timeout: 100 });
-
     beforeEach(() => {
       mockHTTP();
       localStorage.clear();
@@ -111,7 +108,7 @@ describe("TinyCache", () => {
     test("callback mode", done => {
       expect(window.a).toBe(0);
       expect(window.d).toBe(0);
-      tc.load([SCRIPT_A_OK, SCRIPT_D_CORS], err => {
+      load([SCRIPT_A_OK, SCRIPT_D_CORS], err => {
         expect(err).toBeNull();
         expect(window.a).toBe(1);
         expect(window.d).toBe(1);
@@ -123,7 +120,7 @@ describe("TinyCache", () => {
     test("promise mode", () => {
       expect(window.a).toBe(0);
       expect(window.d).toBe(0);
-      return tc.load([SCRIPT_A_OK, SCRIPT_D_CORS]).then(() => {
+      return load([SCRIPT_A_OK, SCRIPT_D_CORS]).then(() => {
         expect(window.a).toBe(1);
         expect(window.d).toBe(1);
         expect(localStorage.length).toBe(2);
@@ -133,12 +130,11 @@ describe("TinyCache", () => {
     test("load in order", () => {
       expect(window.a).toBe(0);
       expect(window.d).toBe(0);
-      return tc
-        .load([SCRIPT_A_OK])
+      return load([SCRIPT_A_OK])
         .then(() => {
           expect(window.a).toBe(1);
           expect(localStorage.length).toBe(1);
-          return tc.load([SCRIPT_D_CORS]);
+          return load([SCRIPT_D_CORS]);
         })
         .then(() => {
           expect(window.d).toBe(1);
@@ -148,7 +144,7 @@ describe("TinyCache", () => {
 
     test("load fallback", () => {
       expect(window.e).toBe(0);
-      return tc.load([SCRIPT_E_NO_CORS]).then(() => {
+      return load([SCRIPT_E_NO_CORS]).then(() => {
         expect(window.e).toBe(1);
         expect(localStorage.length).toBe(0);
       });
@@ -156,12 +152,11 @@ describe("TinyCache", () => {
 
     test("load from localStorage", () => {
       expect(window.a).toBe(0);
-      return tc
-        .load([SCRIPT_A_OK])
+      return load([SCRIPT_A_OK])
         .then(() => {
           expect(window.a).toBe(1);
           expect(localStorage.length).toBe(1);
-          return tc.load([SCRIPT_A_OK]);
+          return load([SCRIPT_A_OK]);
         })
         .then(() => {
           expect(window.a).toBe(2);
@@ -171,13 +166,12 @@ describe("TinyCache", () => {
 
     it("should update when url changed", () => {
       expect(window.a).toBe(0);
-      return tc
-        .load([SCRIPT_A_OK])
+      return load([SCRIPT_A_OK])
         .then(() => {
           expect(window.a).toBe(1);
           expect(localStorage.length).toBe(1);
           expect(getItem("TC:" + SCRIPT_A_OK.name).url).toBe(SCRIPT_A_OK.url);
-          return tc.load([SCRIPT_A_ANOTHER]);
+          return load([SCRIPT_A_ANOTHER]);
         })
         .then(() => {
           expect(window.a).toBe(-1);
@@ -190,8 +184,7 @@ describe("TinyCache", () => {
 
     it("should update when script is stale", () => {
       expect(window.c).toBe(0);
-      return tc
-        .load([SCRIPT_C_STALE])
+      return load([SCRIPT_C_STALE])
         .then(() => {
           expect(window.c).toBe(1);
           expect(localStorage.length).toBe(1);
@@ -199,7 +192,7 @@ describe("TinyCache", () => {
           expect(getItem("TC:" + SCRIPT_C_STALE.name).expire).toBeLessThan(
             new Date().getTime()
           );
-          return tc.load([SCRIPT_C_STALE]);
+          return load([SCRIPT_C_STALE]);
         })
         .then(() => {
           expect(window.c).toBe(2);
@@ -212,7 +205,7 @@ describe("TinyCache", () => {
     });
 
     it("should ok when some scripts are broken", () => {
-      return tc.load([SCRIPT_B_BAD, SCRIPT_E_NO_CORS]).catch(err => {
+      return load([SCRIPT_B_BAD, SCRIPT_E_NO_CORS]).catch(err => {
         expect(err).toBeInstanceOf(Error);
         expect(window.b).toBe(0);
         expect(window.e).toBe(1);
@@ -221,10 +214,11 @@ describe("TinyCache", () => {
     });
 
     it("should fallback when localStorage item is broken", () => {
-      SaveScriptToStorage("TC:", SCRIPT_A_OK, "");
+      setItem(`TC:${SCRIPT_A_OK.name}`, "" as any);
+      // SaveScriptToStorage("TC:", SCRIPT_A_OK, "");
       expect(window.a).toBe(0);
       expect(localStorage.length).toBe(1);
-      return tc.load([SCRIPT_A_OK]).then(() => {
+      return load([SCRIPT_A_OK]).then(() => {
         expect(window.a).toBe(1);
         expect(localStorage.length).toBe(1);
       });
@@ -232,8 +226,6 @@ describe("TinyCache", () => {
   });
 
   describe(".remove()", () => {
-    const tc = new TinyCache({ timeout: 100 });
-
     beforeEach(() => {
       mockHTTP();
       localStorage.clear();
@@ -244,9 +236,9 @@ describe("TinyCache", () => {
     });
 
     it("should ok", () => {
-      return tc.load([SCRIPT_A_OK]).then(() => {
+      return load([SCRIPT_A_OK]).then(() => {
         expect(localStorage.length).toBe(1);
-        tc.remove(SCRIPT_A_OK);
+        remove(SCRIPT_A_OK);
         expect(localStorage.length).toBe(0);
       });
     });

@@ -3,7 +3,7 @@ export interface ITinyCacheConfig {
   timeout?: number;
 }
 
-export interface IScriptConfig {
+export interface IResourceConfig {
   readonly name: string;
   readonly url: string;
   readonly maxAge?: number;
