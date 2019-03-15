@@ -79,21 +79,11 @@ beforeEach(() => {
 });
 
 describe("TinyCache", () => {
-  // describe(".constructor()", () => {
-  //   it("should work with empty parameter", () => {
-  //     expect(() => new TinyCache()).not.toThrow();
-  //   });
-
-  //   it("should work with parameter provided", () => {
-  //     expect(
-  //       () =>
-  //         new TinyCache({
-  //           prefix: "1",
-  //           timeout: 1000
-  //         })
-  //     ).not.toThrow();
-  //   });
-  // });
+  describe(".configure()", () => {
+    it("should work", () => {
+      configure({});
+    });
+  });
 
   describe(".load()", () => {
     beforeEach(() => {
@@ -169,6 +159,20 @@ describe("TinyCache", () => {
         expect(window.a).toBe(1);
         expect(localStorage.length).toBe(0);
       });
+    });
+
+    test("maxAge is null", () => {
+      const res = Object.assign({}, SCRIPT_A_OK, { maxAge: undefined });
+      return load([res])
+        .then(() => {
+          expect(window.a).toBe(1);
+          expect(localStorage.length).toBe(1);
+          return load([res]);
+        })
+        .then(() => {
+          expect(window.a).toBe(2);
+          expect(localStorage.length).toBe(1);
+        });
     });
 
     it("should update when url changed", () => {
