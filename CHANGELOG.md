@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.0-0"></a>
+# [1.0.0-0](https://github.com/giuem/tiny-cache/compare/v0.1.3...v1.0.0-0) (2019-03-15)
+
+
+### Code Refactoring
+
+* change api from class to function ([afc863f](https://github.com/giuem/tiny-cache/commit/afc863f))
+
+
+### BREAKING CHANGES
+
+* core api changed
+
+
+
 <a name="0.1.3"></a>
 ## [0.1.3](https://github.com/giuem/tiny-cache/compare/v0.1.2...v0.1.3) (2019-02-10)
 
