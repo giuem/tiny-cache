@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [1.0.0](https://github.com/giuem/tiny-cache/compare/v0.1.3...v1.0.0) (2019-03-16)
+
+
+### Code Refactoring
+
+* change api from class to function ([72b9926](https://github.com/giuem/tiny-cache/commit/72b9926))
+
+
+### Features
+
+* add css support ([f9b5822](https://github.com/giuem/tiny-cache/commit/f9b5822))
+* add noCache option ([878a802](https://github.com/giuem/tiny-cache/commit/878a802))
+
+
+### BREAKING CHANGES
+
+* core api changed
+
+
+
 <a name="1.0.0-0"></a>
 # [1.0.0-0](https://github.com/giuem/tiny-cache/compare/v0.1.3...v1.0.0-0) (2019-03-15)
 
