@@ -234,6 +234,17 @@ describe("TinyCache", () => {
         expect(localStorage.length).toBe(1);
       });
     });
+
+    it("should throw error when suffix is unknown", () => {
+      return load([
+        {
+          name: "a",
+          url: "./aa"
+        }
+      ]).catch(err => {
+        expect(err).toBeInstanceOf(Error);
+      });
+    });
   });
 
   describe(".remove()", () => {

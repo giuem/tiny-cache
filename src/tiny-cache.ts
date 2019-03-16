@@ -4,7 +4,8 @@ import {
   ICallback,
   IResourceConfig,
   IStorageItem,
-  ITinyCacheConfig
+  ITinyCacheConfig,
+  ResourceType
 } from "./types";
 import { asyncFn, merge } from "./util";
 import { get } from "./xhr";
@@ -33,7 +34,7 @@ function load(resources: IResourceConfig[], callback?: ICallback<void[]>) {
 
   asyncFn<void>(
     resources.map(resource => (cb: ICallback<void>) => {
-      loadJS(resource, cb);
+      loadResource(resource, cb);
     }),
     callback
   );
@@ -43,36 +44,43 @@ function remove(resource: IResourceConfig) {
   removeItem(`${config.prefix}${resource.name}`);
 }
 
-function loadJS(js: IResourceConfig, callback: ICallback<void>) {
-  const key = `${config.prefix}${js.name}`;
+function loadResource(resource: IResourceConfig, callback: ICallback<void>) {
+  const key = `${config.prefix}${resource.name}`;
+  const type = resource.type || (resource.url.split(".").pop() as ResourceType);
+  if (type !== "css" && type !== "js") {
+    return callback(new Error(`Unknown resource type: ${type}`));
+  }
 
-  if (js.noCache) {
-    return injectElement(key, js.url, callback);
+  if (resource.noCache) {
+    return injectElement(key, resource.url, type, callback);
   }
 
   const cached = getItem(key);
   // cached, no update, no expired
   if (
     cached &&
-    cached.url === js.url &&
+    cached.url === resource.url &&
     (!cached.expire || cached.expire > new Date().getTime())
   ) {
-    injectInlineElement(key, cached.content);
+    injectInlineElement(key, cached.content, type);
     callback(null);
   } else {
-    get(js.url, config.timeout!, (err, content) => {
+    get(resource.url, config.timeout!, (err, content) => {
       if (!err && content) {
         const item: IStorageItem = {
           content,
-          expire: js.maxAge ? new Date().getTime() + js.maxAge * 1000 : null,
-          name: js.name,
-          url: js.url
+          expire: resource.maxAge
+            ? new Date().getTime() + resource.maxAge * 1000
+            : null,
+          name: resource.name,
+          type,
+          url: resource.url
         };
-        injectInlineElement(key, content);
+        injectInlineElement(key, content, type);
         setItem(key, item);
         callback(null);
       } else {
-        injectElement(key, js.url, callback);
+        injectElement(key, resource.url, type, callback);
       }
     });
   }

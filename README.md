@@ -6,7 +6,7 @@
 [![npm version](https://img.shields.io/npm/v/@giuem/tiny-cache.svg?style=flat-square)](https://www.npmjs.com/package/@giuem/tiny-cache)
 [![npm license](https://img.shields.io/npm/l/@giuem/tiny-cache.svg?style=flat-square)](https://github.com/giuem/tiny-cache/blob/master/LICENSE)
 
-A tiny library (**\~ 1kb Gzipped**) that cache your JavaScript files in localStorage.
+A tiny library (**\~ 1kb Gzipped**) that cache your static files in localStorage.
 
 **:heavy_exclamation_mark:DO NOT USE IT IN PRODUCTION.** This library is under development, its API and implementation may be changed at any time.
 
@@ -46,6 +46,8 @@ Now you can load your JavaScript files,
 load([
     { name: "script-1", url: "./script-1.js" },
     { name: "script-2", url: "./script-2.js", maxAge: 86400 },
+
+    { name: "style-1", url: "./style-1.css", maxAge: 86400 },
     // more files ...
 ]);
 ```
@@ -67,6 +69,7 @@ The `load` method loads a set of resources, every resource object has the follow
 * `url`: the URI of the script. Also identity the script's content, script will be updated if changed. Because of the CORS restrictions, loading a script without CORS header will fallback to `<script>` tag and won't be cached in localStorage.
 * `maxAge`: maxAge for the script. Specify how long before the script is expired (in seconds). If not provided, script will never be expired.
 * `noCache`: load via HTML tag directly.
+* `type`: specify file type (css or js). It will be determined by file suffix if not provided.
 
 This method supports both callback and promise style. For example,
 
